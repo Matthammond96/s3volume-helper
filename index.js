@@ -13,7 +13,11 @@ const client = new S3Client({
           secretAccessKey: process.env.SECERT_ACCESS_KEY,
         },
       }
-    : undefined),
+    : {
+        signer: {
+          sign: (request) => request,
+        },
+      }),
 });
 
 const Bucket = process.argv.slice(2)[0].replace("s3://", "");
