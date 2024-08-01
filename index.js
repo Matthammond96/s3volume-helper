@@ -5,11 +5,15 @@ import listBucketObjects from "./helpers/listBucketObjects.js";
 import TransferMonitor from "./helpers/transferMonitor.js";
 
 const client = new S3Client({
-  region: "eu-west-1",
-  credentials: {
-    accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECERT_ACCESS_KEY,
-  },
+  region: process.env.REGION || "eu-west-1",
+  ...(process.env.ACCESS_KEY_ID && process.env.SECERT_ACCESS_KEY
+    ? {
+        credentials: {
+          accessKeyId: process.env.ACCESS_KEY_ID,
+          secretAccessKey: process.env.SECERT_ACCESS_KEY,
+        },
+      }
+    : undefined),
 });
 
 const Bucket = process.argv.slice(2)[0].replace("s3://", "");
