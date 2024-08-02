@@ -20,7 +20,15 @@ const client = new S3Client({
       }),
 });
 
-const Bucket = process.argv.slice(2)[0].replace("s3://", "");
+let Prefix,
+  Bucket = process.argv.slice(2)[0].replace("s3://", "");
+
+const prefixIndex = Bucket.indexOf("/");
+
+if (prefixIndex !== -1) {
+  Prefix = Bucket.slice(prefixIndex + 1);
+  Bucket = Bucket.slice(0, prefixIndex);
+}
 
 const monitor = new TransferMonitor();
 monitor.on("progress", (progress) => {
@@ -29,7 +37,7 @@ monitor.on("progress", (progress) => {
   process.stdout.write(JSON.stringify(progress));
 });
 
-const { objects, size } = await listBucketObjects(Bucket, client);
+const { objects, size } = await listBucketObjects(Bucket, Prefix, client);
 
 monitor.emit("metadata", size, objects.length);
 

@@ -1,6 +1,6 @@
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 
-export default async function listBucketObjects(bucket, client) {
+export default async function listBucketObjects(bucket, prefix, client) {
   const objects = [];
   let size = 0;
   let firstRun = true;
@@ -13,6 +13,7 @@ export default async function listBucketObjects(bucket, client) {
       const result = await client.send(
         new ListObjectsV2Command({
           Bucket: bucket,
+          Prefix: prefix,
           ContinuationToken: continuationToken,
         })
       );
